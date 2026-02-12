@@ -1,7 +1,7 @@
 import random
 
 
-grille = [["#" for i in range(10)] for j in range(10)]
+grille = [["#" for i in range(9)] for j in range(9)]
 
 # on pose le s
 row_s = random.randint(0,9)
