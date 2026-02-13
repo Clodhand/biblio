@@ -18,22 +18,48 @@ grille[row_g][col_g] = "g"
 
 goal_pos = (row_g, col_g)
 pos = (row_s, col_s)
-manat = abs(row_s -row_g) + abs(col_s - col_g)
 
-while pos != goal_pos:
-    pos = (row_s + 1, col_s)
-    add_row = row_s + 1
-    manat_1 = abs(add_row - row_g) + abs(col_s - col_g)
-    if manat_1 < manat:
-        grille[add_row][col_s] = "."
-    else:
-        add_col = col_s + 1
-        manat_1 = abs(row_s - row_g) + abs(add_col - col_g)
-        if manat_1 < manat:
-            grille[row_s][add_col] = "."
+manhat = abs(row_s -row_g) + abs( col_s - col_g)
 
+def digg_right(pos, goal_pos, manhat, grille ):
+    row, col = pos
+    col = col+1
+    row_g, col_g = goal_pos
+
+    if col >= len(grille[0]):
+        return None
+    
+    if grille[row][col] == "g":
+        goal_pos = (row_g, col_g)
+        return (goal_pos)
+    
+    manhat_new = abs(row - row_g) + abs( col - col_g)
+
+    if (manhat_new < manhat) and (grille[row][col] != "s"):
+        grille[row][col] = "."
+        manhat = manhat_new
+        pos = (row, col)
+        return (pos, manhat)
+    return None
+
+        
+
+
+# on calcul manat a la position pos
+# on part de pos on test +1 right
+# on calcul manat_2 
+# si manat_2 < manat et que (row_s, col_s + 1) != "g" et que (col_s + 1 ) < 10 :
+# on ecrit un "." à la coord (row_s, col_s +1)
+# elif (row_s, col_s +1) == "g" : break
 
 
 
 for ligne in grille:
     print(''.join(ligne))
+
+
+
+
+
+
+
