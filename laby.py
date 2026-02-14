@@ -37,14 +37,13 @@ def digg_move(pos, dr, dc, grille):
 def digg(pos, manhat, goal, grille):
     row, col = pos
     row_g, col_g = goal
-
     digg_direction = [(0, 1), (1, 0), (0, -1), (-1,0)]
-    
     good_list = []
     bad_list = []
+
     for dr, dc in digg_direction:
         mov = digg_move(pos, dr, dc, grille)
-        if mov is None or mov == pos :
+        if mov is None :
             continue
         elif mov == goal:
             return (mov, 0)
@@ -55,7 +54,49 @@ def digg(pos, manhat, goal, grille):
         else:
             bad_list.append((mov, manhat_new))   
 
-    if len(good_list) != 0:
+
+    if good_list and bad_list :
+        curseur = 90
+        nombre = random.randint(0, 100)
+        if nombre <= curseur :
+            choix = random.choice(good_list)
+            return choix
+        else:
+            choix = random.choice(bad_list)  
+            return choix
+
+    elif good_list :
+        choix = random.choice(good_list)
+        return choix
+
+    elif bad_list :
+        choix = random.choice(bad_list)
+        return choix
+    else:
+        return None
+seen = {pos}
+compteur = 0
+while pos != goal_pos : 
+    res = digg(pos, manhat, goal_pos, grille)
+    if res is None:
+        continue
+    pos, manhat = res
+    if pos in seen:
+        compteur = compteur +1
+        if compteur > 400 : 
+            break
+    seen.add(pos)
+    row, col = pos
+    if grille[row][col] == "s" or grille[row][col] == "g" :
+        continue
+    else:
+        grille[row][col] = "."
+
+for ligne in grille:
+    print(''.join(ligne))        
+
+
+
 
 
 
@@ -66,8 +107,8 @@ def digg(pos, manhat, goal, grille):
 
 
 
-
-""" def digg_right(pos, goal_pos, manhat, grille ):
+"""
+ def digg_right(pos, goal_pos, manhat, grille ):
     row, col = pos
     
     col = col+1
