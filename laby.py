@@ -1,21 +1,21 @@
 import random
 
 
-grille = [["#" for i in range(10)] for j in range(10)]
-for ligne in grille:
-    print(''.join(ligne))
+grille = [["#" for i in range(20)] for j in range(20)]
+""" for ligne in grille:
+    print(''.join(ligne)) """
 
 # on pose le s
-row_s = random.randint(0,9)
-col_s = random.randint(0,9)
+row_s = random.randint(0,19)
+col_s = random.randint(0,19)
 grille[row_s][col_s] = "s"
 
 # on pose le g
 row_g = row_s
 col_g = col_s
 while (row_g, col_g) == (row_s, col_s):
-    row_g =random.randint(0,9)
-    col_g = random.randint(0,9)
+    row_g =random.randint(0,19)
+    col_g = random.randint(0,19)
 grille[row_g][col_g] = "g"
 
 goal_pos = (row_g, col_g)
@@ -25,7 +25,7 @@ manhat = abs(row_s -row_g) + abs( col_s - col_g)
 
 def digg_right(pos, goal_pos, manhat, grille ):
     row, col = pos
-    print(pos)
+    
     col = col+1
     row_g, col_g = goal_pos
     pos = (row, col)
@@ -41,8 +41,8 @@ def digg_right(pos, goal_pos, manhat, grille ):
         return (pos, manhat_new)
     
     # si manhat se reduit et qu'on est pas sur "s"
-    if (manhat_new < manhat) and (grille[row][col] != "s"):
-        grille[row][col] = "."
+    if (manhat_new <= manhat) and (grille[row][col] != "s"):
+        # grille[row][col] = "."
         return (pos, manhat_new)
     return None
 
@@ -64,8 +64,8 @@ def digg_down(pos, goal_pos, manhat, grille):
         return (pos , manhat_new)
     
     # si manhat se reduit et qu'on est pas sur "s"
-    if (manhat_new < manhat) and (grille[row][col] != "s"):
-        grille[row][col]= "."
+    if (manhat_new <= manhat) and (grille[row][col] != "s"):
+        # grille[row][col]= "."
         return (pos, manhat_new)
     return None
 
@@ -86,8 +86,8 @@ def digg_left(pos, goal_pos, manhat, grille):
         return (pos, manhat_new)
 
     # si manhat se reduit et qu'on est pas sur "s"
-    if (manhat_new < manhat) and (grille[row][col] != "s"):
-        grille[row][col]= "."
+    if (manhat_new <= manhat) and (grille[row][col] != "s"):
+        # grille[row][col]= "."
         return (pos, manhat_new)
     return None
     
@@ -108,42 +108,80 @@ def digg_up(pos, goal_pos,manhat, grille):
         return (pos, manhat_new)
     
     # si manhat se reduit et qu'on est pas "s"
-    if (manhat_new < manhat) and (grille[row][col] != "s"):
-        grille[row][col] = "."
+    if (manhat_new <= manhat) and (grille[row][col] != "s"):
+        # grille[row][col] = "."
         return (pos, manhat_new)
     return None
 
 while True:
+    list_mov = []
+    right = digg_right(pos, goal_pos, manhat, grille) 
+    if right != None :
+        list_mov.append(right)
+
+    down = digg_down(pos, goal_pos, manhat, grille)  
+    if down != None:
+        list_mov.append(down)
+
+    left = digg_left(pos, goal_pos, manhat, grille)
+    if left != None:
+        list_mov.append(left)    
+
+    up = digg_up(pos, goal_pos, manhat, grille)
+    if up != None:
+        list_mov.append(up)
+        # print(list_mov)
+    if not list_mov:
+        break    
+    found = False
+    for element in list_mov:
+        if goal_pos == element[0]:
+            print("goal trouvé :", goal_pos)
+            found = True
+            
+    if found == True:
+        pos = goal_pos
+        break
+    
+    choix_mov = random.choice(list_mov)
+    pos, manhat = choix_mov
+    row, col = pos
+
+    if (grille[row][col] != "s") and (grille[row][col] != "g"):
+        grille[row][col] = "."
+    
+for ligne in grille:
+    print(''.join(ligne))
+
+
+
+""" 
     right = digg_right(pos, goal_pos, manhat, grille)
     print(right)
     if right != None:
         pos, manhat = right
         if pos == goal_pos:
             break
+        continue
     down = digg_down(pos, goal_pos, manhat, grille)
     if down != None:
-        pos, manath = down
+        pos, manhat = down
         if pos == goal_pos:
             break
+        continue
     left = digg_left(pos, goal_pos, manhat, grille)   
     if left != None:
-        pos, manath = left
+        pos, manhat = left
         if pos == goal_pos:
             break
+        continue
     up = digg_up(pos, goal_pos, manhat, grille)
     if up != None:
         pos, manhat = up
         if pos == goal_pos:
             break
-    else:
-        break    
-
-for ligne in grille:
-    print(''.join(ligne))
-
-
-
-
+        continue
+    print("c'est bloqué")     """
 
 
 
