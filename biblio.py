@@ -3,21 +3,18 @@
 # à un point "g"
 
 # lire le fichier biblio
-
 f = open('biblio.txt', 'r')
 contenu = f.read()
-print(contenu)
 # print(repr(contenu)) voir les caractères de retour à la ligne
 f.close()
 
 # split in lines
 contenu = contenu.splitlines()
-print (contenu)
 
-# Search the initial state. mémo :  contenu[rangé][colonne] et meme convention pour coordonnées
+# Search the initial state. mémo :  contenu[rangé][colonne] 
+# et meme convention pour coordonnées
 start = None
 goal = None
-print(len(contenu[0]))
 for row in range(len(contenu)):
     for col in range(len(contenu[row])):
         if contenu[row][col].lower() == "s":
@@ -45,11 +42,6 @@ def move(state, dr, dc, contenu):
         return (nrow, ncol)
     return None
     
-
-#bfs en pseudo :
-# search convention right, down, left, up
-# initial state = [start]
-
 # on génère les voisins à une case
 def voisins(state, contenu):
     liste = []
@@ -60,48 +52,40 @@ def voisins(state, contenu):
             liste.append((action, deplacement))
     return  liste      
 
+# fonction principale
+def bfs(start, goal, contenu):
+    frontiere = [start]
+    seen = set()
+    seen.add(start)
+    parent = {}
 
-    r = move(state, 0, 1, contenu)
-    if r is not None:
-        liste.append(("right", r))
-    d = move(state, 1, 0, contenu)
-    if d is not None:
-        liste.append(("down", d))
-    l = move(state, 0, -1, contenu)
-    if l is not None:
-        liste.append(("left", l))
-    u = move(state, -1, 0, contenu)
-    if u is not None:
-        liste.append(("up", u))
-    return liste
+    while frontiere:
+        current = frontiere.pop(0)
+        if current == goal :
+            node = goal
+            chemin_inverse = []
+            while node != start:
+                parent_state, action = parent[node]
+                chemin_inverse.append((action))
+                node = parent_state
+            actions = list(reversed(chemin_inverse))
+            return actions
+        
+        for action, child in voisins(current, contenu):
+            if child not in seen:
+                seen.add(child)
+                frontiere.append(child)
+                parent[child] = (current, action)    
+    return None 
 
+for row in contenu:           
+    print(row)  
 
-frontiere = [start]
-seen = set()
-seen.add(start)
-parent = {}
+if start is None or goal is None:
+    print("Pas de case de démarrage ou pas de case goal !")
+else:
+    print(bfs(start, goal, contenu))
 
-while frontiere:
-    current = frontiere.pop(0)
-    if current == goal :
-
-        node = goal
-        chemin_inverse = []
-        while node != start:
-            parent_state, action = parent[node]
-            chemin_inverse.append((action, node))
-            node = parent_state
-        actions = list(reversed(chemin_inverse))
-        print("Le chemin est :")
-        print(actions)
-        break
-
-
-    for action, child in voisins(current, contenu):
-        if child not in seen:
-            seen.add(child)
-            frontiere.append(child)
-            parent[child] = (current , action)
 
 
 
