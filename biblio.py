@@ -1,6 +1,6 @@
 # exercice de la biblio
-# trouver le chemin le plus court d'un point s
-# a un point g
+# trouver le chemin le plus court d'un point "s"
+# à un point "g"
 
 # lire le fichier biblio
 
@@ -27,84 +27,24 @@ for row in range(len(contenu)):
 print("start=", start)
 print("goal=", goal)
 
-# fonction pour voir les case autour de notre agent commençant à s
-# deplacement de 1 dans chaque direction
-
-def move_right(row, col, contenu):
-    add_col = col + 1
-
-    # dépassement de grille :
-    if add_col >= len(contenu[row]):
+# fonction pour voir les case autour de notre agent commençant à "s"
+# déplacement de 1 case dans chaque direction
+def move(state, dr, dc, contenu):
+    traversable = {'.', 's', 'g'}
+    row, col = state
+    nrow = row + dr
+    ncol = col + dc
+    if nrow >= len(contenu) or nrow < 0 or ncol >= len(contenu[nrow]) or ncol < 0:
         return None
-
-    cell = contenu[row][add_col]
-
+    cell = contenu[nrow][ncol]
     # gestion des murs
     if cell == "#":
         return None
-
     # détection mouvement valide
-    traversable = {'.', 's', 'g'}
     if cell.lower() in traversable:
-       return (row, add_col)
+        return (nrow, ncol)
     return None
-
-def move_down(row, col, contenu):
-    add_row = row + 1
-
-    # dépassement de la grille
-    if add_row >= len(contenu):
-        return None
-
-    cell = contenu[add_row][col]
-
-    # gestion des murs
-    if cell == "#":
-        return None
-
-    # détection mouvement valide
-    traversable = {'.', 's', 'g'}
-    if cell.lower() in traversable:
-        return (add_row, col)
-    return None
-
-def move_left(row, col, contenu):
-    minus_col = col -1
-
-    # dépassement de grille
-    if minus_col < 0 :
-        return None
-
-    cell = contenu[row][minus_col]
-
-    # gestion des murs
-    if cell == "#":
-        return None
-
-    # détection mouvement valide
-    traversable = {'.', 's', 'g'}
-    if cell.lower() in traversable:
-        return (row, minus_col)
-    return None
-
-def move_up(row, col, contenu):
-    minus_row = row - 1
-
-    # dépassement de grille
-    if minus_row < 0:
-        return None
-
-    cell = contenu[minus_row][col]
-
-    # gestion des murs
-    if cell =="#":
-        return None
-
-    # détection mouvement valide
-    traversable = {'.', 's', 'g'}
-    if cell.lower() in traversable:
-        return (minus_row, col)
-    return None
+    
 
 #bfs en pseudo :
 # search convention right, down, left, up
@@ -112,18 +52,25 @@ def move_up(row, col, contenu):
 
 # on génère les voisins à une case
 def voisins(state, contenu):
-    row, col = state
     liste = []
-    r = move_right(row, col, contenu)
+    direction = [("right", 0, 1), ("down", 1, 0), ("left", 0, -1), ("up", -1, 0)]
+    for action, dr, dc in direction:
+        deplacement = move(state, dr, dc, contenu)
+        if deplacement is not None:
+            liste.append((action, deplacement))
+    return  liste      
+
+
+    r = move(state, 0, 1, contenu)
     if r is not None:
         liste.append(("right", r))
-    d = move_down(row, col, contenu)
+    d = move(state, 1, 0, contenu)
     if d is not None:
         liste.append(("down", d))
-    l = move_left(row, col, contenu)
+    l = move(state, 0, -1, contenu)
     if l is not None:
         liste.append(("left", l))
-    u = move_up(row, col, contenu)
+    u = move(state, -1, 0, contenu)
     if u is not None:
         liste.append(("up", u))
     return liste
