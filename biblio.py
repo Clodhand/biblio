@@ -1,3 +1,4 @@
+from collections import deque
 # exercice de la biblio
 # trouver le chemin le plus court d'un point "s"
 # à un point "g"
@@ -54,13 +55,13 @@ def voisins(state, contenu):
 
 # fonction principale
 def bfs(start, goal, contenu):
-    frontiere = [start]
+    frontiere = deque([start])
     seen = set()
     seen.add(start)
     parent = {}
 
     while frontiere:
-        current = frontiere.pop(0)
+        current = frontiere.popleft()
         if current == goal :
             node = goal
             chemin_inverse = []
