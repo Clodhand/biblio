@@ -1,21 +1,21 @@
 import random
 
 
-grille = [["#" for i in range(20)] for j in range(20)]
+grille = [["#" for i in range(40)] for j in range(40)]
 """ for ligne in grille:
     print(''.join(ligne)) """
 
 # on pose le s
-row_s = random.randint(0,19)
-col_s = random.randint(0,19)
+row_s = random.randint(0,39)
+col_s = random.randint(0,39)
 grille[row_s][col_s] = "s"
 
 # on pose le g
 row_g = row_s
 col_g = col_s
 while (row_g, col_g) == (row_s, col_s):
-    row_g =random.randint(0,19)
-    col_g = random.randint(0,19)
+    row_g =random.randint(0,39)
+    col_g = random.randint(0,39)
 grille[row_g][col_g] = "g"
 
 goal_pos = (row_g, col_g)
