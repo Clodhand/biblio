@@ -4,7 +4,7 @@ from collections import deque
 # à un point "g"
 
 # lire le fichier biblio
-f = open('biblio.txt', 'r')
+f = open('grille.txt', 'r')
 contenu = f.read()
 # print(repr(contenu)) voir les caractères de retour à la ligne
 f.close()
