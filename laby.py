@@ -1,4 +1,5 @@
 import random
+from biblio import bfs
 
 def generate_maze(hauteur, largeur, curseur, max_doublon, difficulty):
     grille =  [["#" for i in range(largeur)] for j in range(hauteur)]
@@ -112,3 +113,6 @@ for ligne in grille:
     print("".join(ligne))
 
 write_maze(grille, "grille.txt")
+
+verification = bfs(start_pos, goal_pos, grille)
+print(verification)
