@@ -1,27 +1,29 @@
 import random
 
-def generate_maze(hauteur, largeur, curseur, max_doublon):
-    grille = [["#" for i in range(largeur)] for j in range(hauteur)]
+def generate_maze(hauteur, largeur, curseur, max_doublon, difficulty):
+    grille =  [["#" for i in range(largeur)] for j in range(hauteur)]
 
-
-    # on pose le s
     row_s = random.randint(0, hauteur - 1)
     col_s = random.randint(0, largeur - 1)
+    start_pos = (row_s, col_s)
     grille[row_s][col_s] = "s"
 
-    # on pose le g
-    row_g = row_s
-    col_g = col_s
-    while (row_g, col_g) == (row_s, col_s):
-        row_g =random.randint(0, hauteur- 1)
-        col_g = random.randint(0, largeur - 1)
-    grille[row_g][col_g] = "g"
-
+    row_g = random.randint(0, hauteur - 1)
+    col_g = random.randint(0, largeur -1)
     goal_pos = (row_g, col_g)
-    pos = (row_s, col_s)
-    start_pos = (row_s, col_s)
 
-    manhat = abs(row_s -row_g) + abs( col_s - col_g)
+    manhat = abs(row_s - row_g) + abs(col_s -col_g)
+    distance_max = (hauteur - 1) + (largeur - 1)
+    min_distance = int(difficulty * distance_max)
+
+    while start_pos == goal_pos or manhat < min_distance:
+        row_g = random.randint(0, hauteur - 1)
+        col_g = random.randint(0, largeur -1)
+        goal_pos = (row_g, col_g)
+        manhat = abs(row_s - row_g) + abs(col_s -col_g)
+
+    pos = (row_s, col_s)
+    grille[row_g][col_g] = "g"
 
     def digg_move(pos, dr, dc, grille):
         row, col = pos
@@ -79,6 +81,7 @@ def generate_maze(hauteur, largeur, curseur, max_doublon):
     seen = {pos}
     compteur = 0
     list_main_path = []
+    list_main_path.append(start_pos)
     while pos != goal_pos : 
         res = digg(pos, manhat, goal_pos, grille)
         if res is None:
@@ -103,148 +106,9 @@ def write_maze(grille, filename):
         for ligne in grille: 
             fichier.write("".join(ligne)+ "\n")
 
-grille, pos, goal_pos = generate_maze(20,80,60,1500)
+grille, start_pos, goal_pos = generate_maze(40, 100, 55, 200000, 0.7)
 
 for ligne in grille:
     print("".join(ligne))
 
 write_maze(grille, "grille.txt")
-
-
-    
-
-
-
-"""
- def digg_right(pos, goal_pos, manhat, grille ):
-    row, col = pos
-    
-    col = col+1
-    row_g, col_g = goal_pos
-    pos = (row, col)
-
-    # si hors grille
-    if col >= len(grille[0]):
-        return None
-    
-    manhat_new = abs(row - row_g) + abs( col - col_g)
-    
-   
-    
-    # si manhat se reduit et qu'on est pas sur "s"
-    if (manhat_new <= manhat) and (grille[row][col] != "s"):
-        # grille[row][col] = "."
-        return (pos, manhat_new)
-    return None
-
-
-def digg_down(pos, goal_pos, manhat, grille):
-    row, col = pos
-    row = row +1
-    row_g, col_g = goal_pos
-    pos = (row, col)
-
-    # si hors grille
-    if row >= len(grille):
-        return None
-    
-    manhat_new = abs(row - row_g) + abs( col - col_g)
-
-    # si on est sur g
-    if grille[row][col] == "g":
-        return (pos , manhat_new)
-    
-    # si manhat se reduit et qu'on est pas sur "s"
-    if (manhat_new <= manhat) and (grille[row][col] != "s"):
-        # grille[row][col]= "."
-        return (pos, manhat_new)
-    return None
-
-def digg_left(pos, goal_pos, manhat, grille):
-    row, col = pos
-    col = col - 1
-    row_g, col_g = goal_pos
-    pos = (row, col)
-
-    # si hors grille
-    if col < 0:
-        return None
-
-    manhat_new = abs(row - row_g) + abs( col - col_g) 
-
-    # si on est sur g
-    if grille[row][col] == "g":
-        return (pos, manhat_new)
-
-    # si manhat se reduit et qu'on est pas sur "s"
-    if (manhat_new <= manhat) and (grille[row][col] != "s"):
-        # grille[row][col]= "."
-        return (pos, manhat_new)
-    return None
-    
-def digg_up(pos, goal_pos,manhat, grille):
-    row, col = pos
-    row = row - 1
-    row_g, col_g = goal_pos
-    pos = (row, col)
-
-    # si hors grille
-    if row < 0:
-        return None
-    
-    manhat_new = abs(row - row_g) + abs( col - col_g) 
-   
-    # si on est sur g
-    if grille[row][col] == "g" :
-        return (pos, manhat_new)
-    
-    # si manhat se reduit et qu'on est pas "s"
-    if (manhat_new <= manhat) and (grille[row][col] != "s"):
-        # grille[row][col] = "."
-        return (pos, manhat_new)
-    return None
-
-while True:
-    list_mov = []
-    right = digg_right(pos, goal_pos, manhat, grille) 
-    if right != None :
-        list_mov.append(right)
-
-    down = digg_down(pos, goal_pos, manhat, grille)  
-    if down != None:
-        list_mov.append(down)
-
-    left = digg_left(pos, goal_pos, manhat, grille)
-    if left != None:
-        list_mov.append(left)    
-
-    up = digg_up(pos, goal_pos, manhat, grille)
-    if up != None:
-        list_mov.append(up)
-        # print(list_mov)
-    if not list_mov:
-        break    
-    found = False
-    for element in list_mov:
-        if goal_pos == element[0]:
-            print("goal trouvé :", goal_pos)
-            found = True
-            
-    if found == True:
-        pos = goal_pos
-        break
-    
-    choix_mov = random.choice(list_mov)
-    pos, manhat = choix_mov
-    row, col = pos
-
-    if (grille[row][col] != "s") and (grille[row][col] != "g"):
-        grille[row][col] = "."
-    
-for ligne in grille:
-    print(''.join(ligne)) """
-
-
-
-
-# BALISE_TEST_12345
